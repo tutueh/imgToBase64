@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Img to Base64</title>
+
+    <style>
+        body{
+            margin: 0px;
+            background-color: rgb(55 65 81);
+        }
+
+        .stilo{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stilo2{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #previewInput{
+            display: none;
+        }
+
+        #previewLabel{
+           display: block;
+           background-color: #1283da;
+           color: #fff;
+           text-align: center;
+           padding: 8px;
+           border-radius: 10px;
+           margin-top: 30px;
+           cursor: pointer;
+           font-size: 18px;
+           font-family:'Courier New', Courier, monospace;
+           text-transform: uppercase;
+        }
+
+        #imgPreview{
+            margin-top: 30px;
+            width: 40%;
+            height: 40%;
+        }
+
+        #base64 {
+            background-color: rgb(31 41 55);
+            width: 30%;
+            height: 50px;
+            color: #fff;
+            border-radius: 20px;
+            resize: none;
+            overflow: hidden;
+        }
+
+        button {
+            height: 50%;
+            margin-left: 10px;
+            display: block;
+            background-color: #1283da;
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family:'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            border: 0px;
+        }
+
+        #filename{
+            font-family:'Courier New', Courier, monospace;
+            color:rgb(245, 247, 248);
+        }
+
+        #color{
+            color: rgb(222, 58, 58);
+            font-family:'Courier New', Courier, monospace;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="stilo">
+    <label for="previewInput" id="previewLabel">Choose image</label>
+    <p id="filename"></p>
+    <input type="file" id="previewInput" accept="image/*">
+</div>
+
+<div class="stilo2">
+    <textarea id="base64"></textarea>
+    <button onClick="copyBase64()">Copy</button>
+</div>
+
+<div class="stilo">
+    <img id="imgPreview">
+</div>
+
+<script>
+
+document.getElementById("previewInput").addEventListener("change", imgBase64);
+document.getElementById("previewInput").addEventListener("input", previewImg);
+document.getElementById("previewInput").addEventListener("change", fileName);
+
+function previewImg(event){
+    let preview = document.getElementById("imgPreview");
+    let file = URL.createObjectURL(event.target.files[0]);
+    preview.src = file;
+}
+
+function imgBase64(event){
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = function(){
+        document.getElementById("base64").value = reader.result;
+    }
+    
+}
+
+function fileName(event){
+    let file = event.target.files[0];
+    let p = document.getElementById("filename");
+    p.innerHTML = 'Choosed file: <span id="color">'+file.name+'</span>';
+
+}
+
+function copyBase64(){
+    let text = document.getElementById("base64");
+    text.select();
+    document.execCommand("copy");
+}
+
+</script>
+
+</body>
+
+</html>
