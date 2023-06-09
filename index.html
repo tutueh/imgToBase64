@@ -1,145 +1,158 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
+  <head>
     <meta charset="UTF-8">
     <title>Img to Base64</title>
-
     <style>
-        body{
-            margin: 0px;
-            background-color: rgb(55 65 81);
-        }
+      body {
+        margin: 0px;
+        background-color: rgb(55 65 81);
+      }
 
-        .stilo{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      .stilo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .stilo2{
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-        }
+      .stilo2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
 
-        #previewInput{
-            display: none;
-        }
+      #previewInput {
+        display: none;
+      }
 
-        #previewLabel{
-           display: block;
-           background-color: #1283da;
-           color: #fff;
-           text-align: center;
-           padding: 8px;
-           border-radius: 10px;
-           margin-top: 30px;
-           cursor: pointer;
-           font-size: 18px;
-           font-family:'Courier New', Courier, monospace;
-           text-transform: uppercase;
-        }
+      #previewLabel {
+        display: block;
+        background-color: #1283da;
+        color: #fff;
+        text-align: center;
+        padding: 8px;
+        border-radius: 10px;
+        margin-top: 30px;
+        cursor: pointer;
+        font-size: 18px;
+        font-family: 'Courier New', Courier, monospace;
+        text-transform: uppercase;
+      }
 
-        #imgPreview{
-            margin-top: 30px;
-            width: 40%;
-            height: 40%;
-        }
+      #imgPreview {
+        margin-top: 30px;
+        width: 40%;
+        height: 40%;
+      }
 
-        #base64 {
-            background-color: rgb(31 41 55);
-            width: 30%;
-            height: 50px;
-            color: #fff;
-            border-radius: 20px;
-            resize: none;
-            overflow: hidden;
-        }
+      #base64 {
+        background-color: rgb(31 41 55);
+        width: 30%;
+        height: 50px;
+        color: #fff;
+        border-radius: 20px;
+        resize: none;
+        overflow: hidden;
+      }
 
-        button {
-            height: 50%;
-            margin-left: 10px;
-            display: block;
-            background-color: #1283da;
-            color: #fff;
-            text-align: center;
-            padding: 8px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            font-family:'Courier New', Courier, monospace;
-            text-transform: uppercase;
-            border: 0px;
-        }
+      button {
+        height: 50%;
+        margin-left: 10px;
+        display: block;
+        background-color: #1283da;
+        color: #fff;
+        text-align: center;
+        padding: 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        font-family: 'Courier New', Courier, monospace;
+        text-transform: uppercase;
+        border: 0px;
+      }
 
-        #filename{
-            font-family:'Courier New', Courier, monospace;
-            color:rgb(245, 247, 248);
-        }
+      #filename {
+        font-family: 'Courier New', Courier, monospace;
+        color: rgb(245, 247, 248);
+      }
 
-        #color{
-            color: rgb(222, 58, 58);
-            font-family:'Courier New', Courier, monospace;
-        }
+      #color {
+        color: rgb(222, 58, 58);
+        font-family: 'Courier New', Courier, monospace;
+      }
     </style>
+  </head>
+  <body>
+        <div class="stilo">
+          <label for="previewInput" id="previewLabel">Choose image</label>
+          <p id="filename"></p>
+          <input type="file" id="previewInput" accept="image/*">
+        </div>
+        <div class="stilo2">
+          <textarea id="base64"></textarea>
+          <button onClick="copyBase64()">Copy</button>
+        </div>
+        <div class="stilo">
+          <img id="imgPreview">
+        </div>
+        <script>
+          var previewInput = document.getElementById("previewInput");
+          var imgPreview = document.getElementById("imgPreview");
+          var base64Textarea = document.getElementById("base64");
+          previewInput.addEventListener("change", imgBase64);
+          previewInput.addEventListener("change", previewImg);
+          previewInput.addEventListener("change", fileName);
+          document.addEventListener("paste", handlePaste);
 
-</head>
+          function previewImg(event) {
+            var file = URL.createObjectURL(event.target.files[0]);
+            imgPreview.src = file;
+          }
 
-<body>
-<div class="stilo">
-    <label for="previewInput" id="previewLabel">Choose image</label>
-    <p id="filename"></p>
-    <input type="file" id="previewInput" accept="image/*">
-</div>
+          function imgBase64(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function() {
+              base64Textarea.value = reader.result;
+            };
+            reader.readAsDataURL(file);
+          }
 
-<div class="stilo2">
-    <textarea id="base64"></textarea>
-    <button onClick="copyBase64()">Copy</button>
-</div>
+          function fileName(event) {
+            var file = event.target.files[0];
+            var p = document.getElementById("filename");
+            p.innerHTML = 'Choosed file:  < span id = "color" > ' + file.name + ' < /span>';
+          }
 
-<div class="stilo">
-    <img id="imgPreview">
-</div>
+          function copyBase64() {
+            let text = document.getElementById("base64");
+            text.select();
+            document.execCommand("copy");
+          }
+          // Função para copiar o conteúdo do textarea quando pressionar Ctrl+C
+          document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'c') {
+              event.preventDefault();
+              copyBase64();
+            }
+          });
 
-<script>
-
-document.getElementById("previewInput").addEventListener("change", imgBase64);
-document.getElementById("previewInput").addEventListener("input", previewImg);
-document.getElementById("previewInput").addEventListener("change", fileName);
-
-function previewImg(event){
-    let preview = document.getElementById("imgPreview");
-    let file = URL.createObjectURL(event.target.files[0]);
-    preview.src = file;
-}
-
-function imgBase64(event){
-    let file = event.target.files[0];
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = function(){
-        document.getElementById("base64").value = reader.result;
-    }
-    
-}
-
-function fileName(event){
-    let file = event.target.files[0];
-    let p = document.getElementById("filename");
-    p.innerHTML = 'Choosed file: <span id="color">'+file.name+'</span>';
-
-}
-
-function copyBase64(){
-    let text = document.getElementById("base64");
-    text.select();
-    document.execCommand("copy");
-}
-
-</script>
-
-</body>
-
+          function handlePaste(event) {
+            var clipboardData = event.clipboardData || window.clipboardData;
+            var items = clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].type.indexOf("image") !== -1) {
+                var file = items[i].getAsFile();
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                  base64Textarea.value = event.target.result;
+                  imgPreview.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+              }
+            }
+          }
+        </script>
+  </body>
 </html>
